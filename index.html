@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EB Calculator</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  
+    <style>
+        body {
+            background-image: url("https://technokd.com/wp-content/uploads/2020/04/Online-Bill-Payment.jpg");
+            background-size: cover;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 2px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: azure;
+            font-size: 20px;
+        }
+
+        td {
+            font-size: 20px;
+        }
+
+        h2 {
+            font-family: century;
+        }
+
+    </style>
+</head>
+
+<body>
+    <br>
+    <h2>Electricity Bill Calculator</h2>
+
+    <form method="post" onsubmit="calculateBill(event)">
+
+        <label for="consumerName">Consumer's Name:</label>
+        <input type="text" id="consumerName" name="consumerName" required><br><br>
+
+        <label for="ebNumber">EB Number:</label>
+        <input type="text" id="ebNumber" name="ebNumber" required><br><br>
+
+       <label for="prevReading">Previous Month Reading:</label>
+        <input type="number" id="prevReading" name="prevReading" required><br><br>
+
+        <label for="currReading">Current Month Reading:</label>
+        <input type="number" id="currReading" name="currReading" required><br><br>
+
+        <br>
+        <button type="submit">Calculate</button>
+        <br><br>
+    </form>
+
+    <div id="billDetails"></div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        function calculateBill(event) {
+            event.preventDefault();
+
+            var consumerName = document.getElementById("consumerName").value;
+            var ebNumber = document.getElementById("ebNumber").value;
+            var prevReading = parseFloat(document.getElementById("prevReading").value);
+            var currReading = parseFloat(document.getElementById("currReading").value);
+
+            var unitsConsumed = currReading - prevReading;
+
+            if (unitsConsumed < 0) {
+                alert("Previous month reading should be less than or equal to the current month reading.");
+                return;
+            }
+
+            var totalAmount = 0;
+
+            if (unitsConsumed <= 100) {
+                totalAmount = unitsConsumed * 0;
+            } else if (unitsConsumed <= 200) {
+                totalAmount = 100 * 0 + (unitsConsumed - 100) * 1.5;
+            } else if (unitsConsumed <= 500) {
+                totalAmount = 100 * 0 + 100 * 1.5 + (unitsConsumed - 200) * 2;
+            } else {
+                totalAmount = 100 * 0 + 100 * 1.5 + 300 * 2 + (unitsConsumed - 500) * 3;
+            }
+
+            var billDetailsHTML = "<h2>Electricity Bill Details</h2>" +
+                                  "<table>" +
+                                  "<tr><th>Description</th><th>Amount</th></tr>" +
+                                  "<tr><td>Consumer's Name</td><td>" + consumerName + "</td></tr>" +
+                                  "<tr><td>EB Number</td><td>" + ebNumber + "</td></tr>" +
+                                  "<tr><td>Previous Month Reading</td><td>" + prevReading + " units</td></tr>" +
+                                  "<tr><td>Current Month Reading</td><td>" + currReading + " units</td></tr>" +
+                                  "<tr><td>Units Consumed</td><td>" + unitsConsumed + " units</td></tr>" +
+                                  "<tr><td>Total Amount</td><td>Rs." + totalAmount.toFixed(2) + "</td></tr>" +
+                                  "</table>";
+
+            document.getElementById("billDetails").innerHTML = billDetailsHTML;
+        }
+    </script>
+</body>
+</html>
+
+
+<!--The cost of 0 to 100 units is zero. It is free of cost.
+The cost of 0 to 200 units is free for the first 100 units and then Rs. 1.5 per unit.
+The cost of 0 to 500 units is free for first 100 units and next 100 units Rs.2 and then Rs 3 and so forth.-->
